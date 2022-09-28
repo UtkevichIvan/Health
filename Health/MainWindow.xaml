@@ -1,0 +1,59 @@
+﻿<Window x:Class="Health.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:local="clr-namespace:Health"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*" ></RowDefinition>
+            <RowDefinition Height="204*" ></RowDefinition>
+            <RowDefinition Height="11*" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <ListView Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Persons}"
+                 SelectedItem="{Binding SelectedPerson}">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=User}">Ф.И.О</GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Average}">Среднее кол-во шагов</GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Max}">Максимальное кол-во шагов</GridViewColumn>
+                        <GridViewColumn DisplayMemberBinding="{Binding Path=Min}">Минимальное кол-во шагов</GridViewColumn>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ColorPerson}" Value="True">
+                            <Setter Property="Background" Value="LightGreen"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <lvc:CartesianChart Grid.Column="1" Grid.RowSpan="3" DataContext="{Binding SelectedPerson}">
+            <lvc:CartesianChart.Series>
+                <lvc:LineSeries Values="{Binding Points}" 
+                                PointGeometrySize="10" 
+                                PointForeground="White"
+                                Configuration="{Binding Mapper}"/>
+            </lvc:CartesianChart.Series>
+        </lvc:CartesianChart>
+        <Menu Height="25" Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Прочитать" Command="{Binding OpenFileCommand}"></MenuItem>
+                <MenuItem Header="Сохранить" Command="{Binding SaveFileCommand}" CommandParameter="{Binding SelectedPerson}"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <Button Grid.Column="0" Grid.Row="2" Command="{Binding SaveCommand}" CommandParameter="{Binding SelectedPerson}" Grid.RowSpan="2">Сохранить</Button>
+    </Grid>
+    
+</Window>
